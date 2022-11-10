@@ -1,0 +1,9 @@
+- Go to the website upload.burflo.com
+- By fuzzing the domain you can see that there's also admin.burflo.com
+- If you go to admin.burflo.com subdomain you get a message that only localhost is allowed
+
+- Go back to upload subdomain
+
+- "Upload" the admin.burflo.com url to the system
+- System returns an url thinking it's an uploaded image, but actually it's the content of admin page
+- Curl the given url -> flag
