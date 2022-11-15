@@ -24,29 +24,32 @@ func setupRouter() *gin.Engine {
 		message := c.PostForm("message")
 		resp, err := http.Get(message)
 		if err != nil {
-			print(err)
+			c.String(http.StatusBadRequest, "err")
+			return
 		}
 		defer resp.Body.Close()
 		body, err := ioutil.ReadAll(resp.Body)
 		if err != nil {
-			print(err)
+			c.String(http.StatusBadRequest, "err")
+			return
 		}
 		
 		hash := fmt.Sprintf("%x", md5.Sum(body))
-		print(hash)
-
 		fileName := filepath.Join(fileDirectory, hash)
 
 		file, err := os.Create(fileName)
 		defer file.Close()
 		if err != nil {
-			print(err)
+			c.String(http.StatusBadRequest, "err")
+			return
 		}
 		_, err = file.Write(body)
 		if err != nil {
-			print(err)
+			c.String(http.StatusBadRequest, "err")
+			return
 		}
-		c.String(http.StatusOK, string(fileName))
+		host := c.Request.Host
+		c.String(http.StatusOK, fmt.Sprintf("http://%s/images/%s", host, hash))
 	})
 
 	r.Static("/images", fileDirectory)
