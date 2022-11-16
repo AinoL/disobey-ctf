@@ -103,14 +103,22 @@
   }
   
   .gallery-wrapper {
+    width: 100%;
     display: flex;
     flex-flow: row wrap;
+    justify-content: center;
+    align-content: stretch;
+    /* height: 500px; */
   }
 
   .img-wrapper {
-    width: 30%;
-    margin: 1em;
+    /* width: 40%; */
   }
+
+  .img-wrapper img {
+    width: inherit;
+    margin: 1em;
+}
 
   /*
    * -- TABLET MEDIA QUERIES --
