@@ -61,13 +61,13 @@ func setupRouter() *gin.Engine {
 			c.String(http.StatusBadRequest, "err")
 			return
 		}
-		host := c.Request.Host
-		url := fmt.Sprintf("http://%s/images/%s", host, hash)
 
-		images = append(images, fmt.Sprintf("/images/%s", hash))
+		imgPath := fmt.Sprintf("images/%s", hash)
+
+		images = append(images, imgPath)
 
 		c.HTML(http.StatusOK, "index.tmpl", gin.H{
-			"Url":    url,
+			"Url":    imgPath,
 			"Images": images,
 		})
 	})
