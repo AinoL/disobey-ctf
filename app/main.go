@@ -23,8 +23,17 @@ func setupRouter() *gin.Engine {
 	fileDirectory := "./images"
 	staticDirectory := "./static"
 
+	images := []string{
+		"/images/35bc566eb29102e880ae4f231458ca66",
+		"/images/35bc566eb29102e880ae4f231458ca66",
+		"/images/35bc566eb29102e880ae4f231458ca66",
+		"/images/35bc566eb29102e880ae4f231458ca66",
+		"/images/35bc566eb29102e880ae4f231458ca66",
+		"/images/35bc566eb29102e880ae4f231458ca66",
+	}
+
 	r.POST("image", func(c *gin.Context) {
-		message := c.PostForm("message")
+		message := c.PostForm("url")
 		resp, err := http.Get(message)
 		if err != nil {
 			c.String(http.StatusBadRequest, "err")
@@ -53,14 +62,14 @@ func setupRouter() *gin.Engine {
 		}
 		host := c.Request.Host
 		url := fmt.Sprintf("http://%s/images/%s", host, hash)
+
+		images = append(images, fmt.Sprintf("/images/%s", hash))
+
 		c.HTML(http.StatusOK, "index.tmpl", gin.H{
-			"Url": url,
+			"Url":    url,
+			"Images": images,
 		})
 	})
-
-	images := []string{
-		"/images/doge",
-	}
 
 	r.GET("/", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "index.tmpl", gin.H{
