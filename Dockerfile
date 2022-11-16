@@ -6,10 +6,11 @@ COPY ./app/*.go /app/
 RUN go build -o /ctf
 
 FROM nginx:alpine
-RUN apk add --no-cache bash
-RUN apk add --no-cache vim
-COPY /custom.conf /etc/nginx/conf.d/default.conf
-COPY /admin /usr/share/nginx/html/admin
+
+ENV NGINX_HOSTNAME "localhost"
+
+COPY ./custom.conf /etc/nginx/templates/default.conf.template
+COPY ./admin /usr/share/nginx/html/admin
 COPY --from=build /ctf /ctf
 COPY ./images /images
 COPY ./templates /templates
