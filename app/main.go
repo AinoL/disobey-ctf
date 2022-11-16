@@ -23,13 +23,14 @@ func setupRouter() *gin.Engine {
 	fileDirectory := "./images"
 	staticDirectory := "./static"
 
-	images := []string{
-		"/images/35bc566eb29102e880ae4f231458ca66",
-		"/images/35bc566eb29102e880ae4f231458ca66",
-		"/images/35bc566eb29102e880ae4f231458ca66",
-		"/images/35bc566eb29102e880ae4f231458ca66",
-		"/images/35bc566eb29102e880ae4f231458ca66",
-		"/images/35bc566eb29102e880ae4f231458ca66",
+	dir, err := os.ReadDir(fileDirectory)
+	if err != nil {
+		panic(err)
+	}
+
+	var images []string
+	for _, img := range dir {
+		images = append(images, fmt.Sprintf("/images/%s", img.Name()))
 	}
 
 	r.POST("image", func(c *gin.Context) {
