@@ -1,13 +1,14 @@
 package main
 
 import (
-	"os"
-	"fmt"
-	"github.com/gin-gonic/gin"
-	"net/http"
-	"io/ioutil"
 	"crypto/md5"
+	"fmt"
+	"io/ioutil"
+	"net/http"
+	"os"
 	"path/filepath"
+
+	"github.com/gin-gonic/gin"
 )
 
 func main() {
@@ -17,8 +18,10 @@ func main() {
 
 func setupRouter() *gin.Engine {
 	r := gin.Default()
+	r.LoadHTMLGlob("./templates/*")
 
 	fileDirectory := "./images"
+	staticDirectory := "./static"
 
 	r.POST("image", func(c *gin.Context) {
 		message := c.PostForm("message")
@@ -33,7 +36,7 @@ func setupRouter() *gin.Engine {
 			c.String(http.StatusBadRequest, "err")
 			return
 		}
-		
+
 		hash := fmt.Sprintf("%x", md5.Sum(body))
 		fileName := filepath.Join(fileDirectory, hash)
 
@@ -49,11 +52,24 @@ func setupRouter() *gin.Engine {
 			return
 		}
 		host := c.Request.Host
-		c.String(http.StatusOK, fmt.Sprintf("http://%s/images/%s", host, hash))
+		url := fmt.Sprintf("http://%s/images/%s", host, hash)
+		c.HTML(http.StatusOK, "index.tmpl", gin.H{
+			"Url": url,
+		})
+	})
+
+	images := []string{
+		"/images/doge",
+	}
+
+	r.GET("/", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "index.tmpl", gin.H{
+			"Images": images,
+		})
 	})
 
 	r.Static("/images", fileDirectory)
-	r.StaticFile("/", "./web/index.html")
+	r.Static("/static", staticDirectory)
 
 	return r
 }
